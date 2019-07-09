@@ -14,52 +14,53 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cadmoney.api.event.ResourceCreatedEvent;
-import com.cadmoney.api.model.Category;
-import com.cadmoney.api.repository.CategoriesRepository;
+import com.cadmoney.api.model.Release;
+import com.cadmoney.api.repository.ReleasesRepository;
 
 @RestController
-@RequestMapping("/categories")
-public class CategoryResource 
+@RequestMapping("/releases")
+public class ReleasesResource 
 {
 	@Autowired
-	private CategoriesRepository categoriesRepository;
+	private ReleasesRepository releasesRepository;
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
 	// Create
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category, HttpServletResponse response) 
+	public ResponseEntity<Release> createRelease(@Valid @RequestBody Release release, HttpServletResponse response)
 	{
-		Category categorySave = categoriesRepository.save(category);
+		Release releaseSave = releasesRepository.save(release);
 		
-		publisher.publishEvent(new ResourceCreatedEvent(this, response,categorySave.getCode()));
+		publisher.publishEvent(new ResourceCreatedEvent(this, response, releaseSave.getCode()));
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(categorySave);
+		return ResponseEntity.status(HttpStatus.CREATED).body(releaseSave);
 	}
 	
 	// Read
 	@GetMapping
-	public List<Category> findAllListCategories()
+	public List<Release> findAllListReleases()
 	{
-		return categoriesRepository.findAll();
+		return releasesRepository.findAll();
 	}
 
 	@GetMapping("/{code}")
-	public ResponseEntity<Category> findByCodeCategory(@PathVariable Long code) 
+	public ResponseEntity<Release> findReleasesByCode(@PathVariable Long code)
 	{
-		Category category = categoriesRepository.findOne(code);
+		Release release = releasesRepository.findOne(code);
 
-		return category != null ? ResponseEntity.ok(category) : ResponseEntity.notFound().build();
+		return release != null ? ResponseEntity.ok(release) : ResponseEntity.notFound().build();
 	}
 	
 	// Update
 	
+	
 	// Delete
+	
+	
 
 }
